@@ -215,7 +215,7 @@ def main():
         return populated_dataset
 
     def keyword_split(keyword_orPresence):
-        keyword_orPresence[0] = keyword_orPresence[0].lstrip().rstrip()
+        keyword_orPresence[0] = keyword_orPresence[0].lstrip().rstrip().upper()
         if " " in keyword_orPresence[0]:
             split_keywords = keyword_orPresence[0].split(" ")
             split_keywords = list(dict.fromkeys(split_keywords))
@@ -262,17 +262,20 @@ def main():
         finalised_stores_price = []
         finalised_stores_count = 0
         complete_stores_price_count = 0
-        for stall_index in range(len(complete_stall_list_keyword)):
-            print(complete_stall_list_keyword[stall_index][1])
-            print(finalised_stores[finalised_stores_count][1])
-            if complete_stall_list_keyword[stall_index][1] == finalised_stores[finalised_stores_count][1]:
-                finalised_stores_price.append(complete_stall_list_keyword[stall_index])
-                finalised_stores_count += 1
-            if finalised_stores_count == len(finalised_stores):
-                break
+        if finalised_stores != []:
+            for stall_index in range(len(complete_stall_list_keyword)):
+                print(complete_stall_list_keyword[stall_index][1])
+                print(finalised_stores[finalised_stores_count][1])
+                if complete_stall_list_keyword[stall_index][1] == finalised_stores[finalised_stores_count][1]:
+                    finalised_stores_price.append(complete_stall_list_keyword[stall_index])
+                    finalised_stores_count += 1
+                if finalised_stores_count == len(finalised_stores):
+                    break
 
-        print(finalised_stores_price)
-        return finalised_stores_price
+            print(finalised_stores_price)
+            return finalised_stores_price
+        else: 
+            return []
 
     def output_stores_by_price(price, filtered_stores):
         finalised_stores = []
@@ -282,9 +285,10 @@ def main():
         return finalised_stores
 
     def print_list(finalised_stores):
+        print(finalised_stores)
         print(f"Food Stalls found: {len(finalised_stores)}")
         for store in finalised_stores:
-            print(f"{store[0]} - {store[1]}")
+            print(f"{store[0]} - {store[1]} - S${store[2]}")
         return 0
 
     def keyword_isEmpty(keyword):
@@ -411,11 +415,11 @@ def main():
 
             print("3 -- Price-based Search")
             keywords = input("Enter type of food: ")
-            max_price = int(input("Enter maximum meal price (S$): "))
+            max_price = float(input("Enter maximum meal price (S$): "))
             result = search_by_price(keywords, max_price)
             while result == 1:
                 keywords = input("Enter type of food: ")
-                max_price = int(input("Enter maximum meal price (S$): "))
+                max_price = float(input("Enter maximum meal price (S$): "))
                 result = search_by_price(keywords, max_price)
             # call price-based search function
             # search_by_price(keywords, max_price)
