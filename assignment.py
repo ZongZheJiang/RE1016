@@ -179,14 +179,28 @@ def main():
         4: canteen_locations
     }
 
+    class FoodCourt:
+        # name: String, location: tuple of size 2
+        def __init__(self, name, location):
+            self.name = name
+            self.location = location
+
+        def __str__(self):
+              return f"{self.name}, {self.location}"
+
+    # Organises the given dictionary into appropriate lists for use based on options 2, 3 and 4
     def populate_list(dataset, option):
+        FoodCourt_list = []
         valid_keyword_list = []
         complete_stall_list = []
         complete_stall_list_keyword = []
         if option == 4:
+            # Converts stall list dictionary to list and returns list
             for food_court in dataset:
                 complete_stall_list.append([food_court, dataset[food_court]])
-            return complete_stall_list
+                FoodCourt_list.append(FoodCourt(food_court, dataset[food_court]))
+            return complete_stall_list, FoodCourt_list
+        # If options 2 or 3, converts 1D stall list and 1D corresponding keywords into a 2D list and returns list
         for food_court in dataset:
             for canteen_stall in option_to_dataset[option][food_court]:
                 complete_stall_list.append(
@@ -210,6 +224,10 @@ def main():
             or_presence = False
             populated_dataset = populate_list(option_to_dataset[option], option)
             return populated_dataset
+        
+        if option == 4:
+            populated_dataset, FoodCourt_list = populate_list(option_to_dataset[option], option)
+            return populated_dataset, FoodCourt_list
 
         populated_dataset = populate_list(option_to_dataset[option], option)
         return populated_dataset
@@ -259,9 +277,9 @@ def main():
         return finalised_stores
 
     def convert_keyword_to_price(finalised_stores):
+        print(finalised_stores)
         finalised_stores_price = []
         finalised_stores_count = 0
-        complete_stores_price_count = 0
         if finalised_stores != []:
             for stall_index in range(len(complete_stall_list_keyword)):
                 print(complete_stall_list_keyword[stall_index][1])
@@ -288,7 +306,14 @@ def main():
         print(finalised_stores)
         print(f"Food Stalls found: {len(finalised_stores)}")
         for store in finalised_stores:
-            print(f"{store[0]} - {store[1]} - S${store[2]}")
+            print(f"{store[0]} - {store[1]}")
+        return 0
+    
+    def print_list_price(finalised_stores):
+        print(finalised_stores)
+        print(f"Food Stalls found: {len(finalised_stores)}")
+        for store in finalised_stores:
+            print(f"{store[0]} - {store[1]} - S${store[2]:.2f}")
         return 0
 
     def keyword_isEmpty(keyword):
@@ -300,6 +325,11 @@ def main():
     def keyword_isInvalid(keyword):
         for element in keyword:
             if element not in valid_keyword_list:
+                if element in ["Mixed", "Rice"]:
+                    keyword.remove(element)
+                    if element == "Mixed": 
+                        keyword.append("Mixed Rice")
+                    continue
                 print(f"Food Stalls found: No food stall found with input keyword {element}.")
                 return 1
         return 0
@@ -349,21 +379,31 @@ def main():
 
         finalised_stores = output_stores_by_price(max_price, filtered_stores)
 
-        print_list(finalised_stores)
+        print_list_price(finalised_stores)
         return 0
 
     def search_nearest_canteens(user_locations, k):
         food_court_distance_list = []
+
+        # Abstracts data into readable variables for easy maintenance 
+        userA_xCoord = user_locations[0][0]
+        userA_yCoord = user_locations[0][1]
+        userB_xCoord = user_locations[1][0]
+        userB_yCoord = user_locations[1][1]
+
         for food_court in complete_stall_list:
-            distance_a = ((user_locations[0][0] - food_court[1][0]) ** 2 +
-                          ((user_locations[0][1] - food_court[1][1]) ** 2)) ** 0.5
-            distance_b = ((user_locations[1][0] - food_court[1][0]) ** 2 +
-                          ((user_locations[1][1] - food_court[1][1]) ** 2)) ** 0.5
+            # Finds the euclidean distance between each stall from the respective users
+            distance_a = ((userA_xCoord - food_court[1][0]) ** 2 + ((userA_yCoord - food_court[1][1]) ** 2)) ** 0.5
+            distance_b = ((userB_xCoord - food_court[1][0]) ** 2 + ((userB_yCoord - food_court[1][1]) ** 2)) ** 0.5
             food_court_distance_list.append([food_court[0], distance_a, distance_b, max(distance_a, distance_b)])
+
+        # Sorts food courts by shortest distance to BOTH users
         food_court_distance_list.sort(key=lambda a: a[3])
-        print(food_court_distance_list)
+        # print(food_court_distance_list)
+
         finalised_food_court_list = food_court_distance_list[0:k]
-        print(finalised_food_court_list)
+        # print(finalised_food_court_list)
+
         print(f"{len(finalised_food_court_list)} Nearest Canteen(s) found:")
         for food_court in finalised_food_court_list:
             print(f"{food_court[0]} - {int(food_court[1])}m (User A), {int(food_court[2])}m (User B)")
@@ -425,7 +465,7 @@ def main():
             # search_by_price(keywords, max_price)
         elif option == 4:
             # location-based search
-            keyword_and_stall_list = list_initialisation(option)
+            keyword_and_stall_list, FoodCourt_list = list_initialisation(option)
             complete_stall_list = keyword_and_stall_list
             print(complete_stall_list)
             print("4 -- Location-based Search")
