@@ -16,17 +16,18 @@
 #       'Quad Cafe': [328, 1071]
 #       }
 
-# class FoodCourt:
-#         # name: String, location: tuple of size 2
-#         def __init__(self, name, location):
-#             self.name = name
-#             self.location = location
+class FoodCourt:
+        # name: String, location: tuple of size 2
+        def __init__(self, name, location):
+            self.name = name
+            self.location = location
 
-#         def __str__(self):
-#               return f"{self.name}, {self.location}"
+        def __str__(self):
+              return f"{self.name}, {self.location}"
 
-# FoodCourt1 = FoodCourt("Canteen 11", (100, 200))
-# print(FoodCourt1)
+FoodCourt1 = FoodCourt("Canteen 11", (100, 200))
+print(FoodCourt1)
+print(FoodCourt1.location)
 
 # FoodCourt_list = []
 # for line in location_dictionary: 
@@ -35,14 +36,3 @@
 
 # for foodcourt in FoodCourt_list:
 #       print(foodcourt)
-sampleList = [
-    ["One", "Two"],
-    ["Two", "One"], 
-    ["One", "Two"]
-]
-
-print(sampleList)
-sampleList = set(tuple(sampleList))
-print(sampleList)
-sampleList = list(sampleList)
-print(sampleList)
