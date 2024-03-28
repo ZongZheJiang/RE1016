@@ -272,9 +272,12 @@ def main():
         # If there is no "AND"
         if keyword_orPresence[1] == True:
             for stall in complete_stall_list:
+                keyword_match_count = 0
                 for indiv_keyword in keyword_orPresence[0]:
-                    if indiv_keyword in stall[2] and stall not in finalised_stores:
-                        finalised_stores.append(stall)
+                    if indiv_keyword in stall[2]:
+                        keyword_match_count += 1
+                if keyword_match_count > 0:
+                    finalised_stores.append([stall, keyword_match_count])
         #If there is "AND"
         else:
             for stall in complete_stall_list:
@@ -283,7 +286,7 @@ def main():
                     if indiv_keyword not in stall[2]:
                         break
                     elif indiv_keyword in stall[2] and count == len(keyword_orPresence[0]) - 1:
-                        finalised_stores.append(stall)
+                        finalised_stores.append([stall, "NIL"])
                     else:
                         count += 1
                         continue
@@ -299,7 +302,7 @@ def main():
         finalised_stores_count = 0
         if finalised_stores != []:
             for stall_index in range(len(complete_stall_list_keyword)):
-                if complete_stall_list_keyword[stall_index][1] == finalised_stores[finalised_stores_count][1]:
+                if complete_stall_list_keyword[stall_index][1] == finalised_stores[finalised_stores_count][0][1]:
                     finalised_stores_price.append(complete_stall_list_keyword[stall_index])
                     finalised_stores_count += 1
                 if finalised_stores_count == len(finalised_stores):
@@ -323,9 +326,25 @@ def main():
 
     # Outputs stores to user by keyword
     def print_list(finalised_stores):
-        print(f"Food Stalls found: {len(finalised_stores)}")
-        for store in finalised_stores:
-            print(f"{store[0]} - {store[1]}")
+        nonlocal keywords
+        keyword_orPresence = keyword_split([keywords, False])
+        if keyword_orPresence[1] == True:
+            for keyword_match_number in range(len(keyword_orPresence[0]) + 1):
+                if keyword_match_number == 0:
+                    continue
+                print("\n")
+                print(f"Food Stalls that match {keyword_match_number}keywords: ")
+                stores_to_be_printed = filter(lambda x: x[1] == keyword_match_number, finalised_stores)
+                stores_to_be_printed = list(stores_to_be_printed)
+                print(f"Food Stalls found: {len(stores_to_be_printed)}")
+                for store in stores_to_be_printed:
+                    print(f"{store[0][0]} - {store[0][1]}")
+        else: 
+            print("\n")
+            print(f"Food Stalls found: {len(finalised_stores)}") 
+            for store in finalised_stores:
+                print(f"{store[0][0]} - {store[0][1]}")
+            print("\n")
         return 0
    
    # Outputs stores to user by price 
@@ -374,22 +393,21 @@ def main():
 
         if keyword_isInvalid(keyword_orPresence[0]) == 1:
             return 1
-
+        
         finalised_stores = output_stores_by_keyword(keyword_orPresence)
 
         print_list(finalised_stores)
 
         return 0
 
-    def search_by_price(keywords, max_price):
+    def search_by_price(keywords_string, max_price):
         or_presence = False
-        keyword_orPresence = [keywords, or_presence]
+        keyword_orPresence = [keywords_string, or_presence]
 
         if keyword_isEmpty(keyword_orPresence[0]) == 1:
             return 1
 
         keyword_orPresence = keyword_split(keyword_orPresence)
-        keywords = keyword_orPresence[0]
 
         if keyword_isInvalid(keyword_orPresence[0]) == 1:
             return 1
