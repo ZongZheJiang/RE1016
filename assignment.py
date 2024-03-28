@@ -256,6 +256,15 @@ def main():
         else:
             keyword_orPresence[0] = [keyword_orPresence[0].lstrip().rstrip().capitalize()]
         return keyword_orPresence
+    
+    def convert_integer_to_float(int_max_price):
+        nonlocal max_price
+        try: 
+            max_price = float(int_max_price)
+        except: 
+            print("Non-number input detected. Please input numbers.")
+            return 1
+        return 0
 
     # Inputs list of keywords and a boolean value (Whether the qualifier "AND" is present), outputs a list of filtered stores
     def output_stores_by_keyword(keyword_orPresence):
@@ -268,7 +277,6 @@ def main():
                         finalised_stores.append(stall)
         #If there is "AND"
         else:
-            print(complete_stall_list)
             for stall in complete_stall_list:
                 count = 0
                 for indiv_keyword in keyword_orPresence[0]:
@@ -279,7 +287,6 @@ def main():
                     else:
                         count += 1
                         continue
-        print(finalised_stores)
         return finalised_stores
 
     """
@@ -288,7 +295,6 @@ def main():
     Hence, this function takes out the keywords from the list, and adds in the price next to the stall in each row.
     """
     def convert_keyword_to_price(finalised_stores):
-        print(finalised_stores)
         finalised_stores_price = []
         finalised_stores_count = 0
         if finalised_stores != []:
@@ -299,7 +305,6 @@ def main():
                 if finalised_stores_count == len(finalised_stores):
                     break
             finalised_stores_price.sort(key=lambda a: a[2])
-            print(finalised_stores_price)
             return finalised_stores_price
         else: 
             return []
@@ -316,7 +321,6 @@ def main():
 
     # Outputs stores to user by keyword
     def print_list(finalised_stores):
-        print(finalised_stores)
         print(f"Food Stalls found: {len(finalised_stores)}")
         for store in finalised_stores:
             print(f"{store[0]} - {store[1]}")
@@ -325,10 +329,6 @@ def main():
    # Outputs stores to user by price 
     def print_list_price(finalised_stores):
         nonlocal max_price
-        print(len(finalised_stores))
-        print(finalised_stores[0][2])
-        print(max_price)
-        print(finalised_stores[0][2] < max_price)
         if (len(finalised_stores) == 1) and (finalised_stores[0][2] > max_price):
             print("Food Stalls found: No food stall found with specified price range.")
             print("Food Stall with the closest price range.")
@@ -336,7 +336,6 @@ def main():
                 print(f"{store[0]} - {store[1]} - S${store[2]:.2f}")
             return 0
         
-        print(finalised_stores)
         print(f"Food Stalls found: {len(finalised_stores)}")
         for store in finalised_stores:
             print(f"{store[0]} - {store[1]} - S${store[2]:.2f}")
@@ -344,7 +343,7 @@ def main():
 
     # Checks if user input is empty
     def keyword_isEmpty(keyword):
-        if keyword == " ":
+        if keyword.lstrip().rstrip() == "":
             print("Error: No input found. Please try again.")
             return 1
         return 0
@@ -476,12 +475,17 @@ def main():
 
             print("3 -- Price-based Search")
             keywords = input("Enter type of food: ")
-            max_price = float(input("Enter maximum meal price (S$): "))
-            result = search_by_price(keywords, max_price)
+            max_price = input("Enter maximum meal price (S$): ")
+            result = convert_integer_to_float(max_price)
+            if result == 0:
+                result = search_by_price(keywords, max_price)
+            
             while result == 1:
                 keywords = input("Enter type of food: ")
-                max_price = float(input("Enter maximum meal price (S$): "))
-                result = search_by_price(keywords, max_price)
+                max_price = input("Enter maximum meal price (S$): ")
+                result = convert_integer_to_float(max_price)
+                if result == 0:
+                    result = search_by_price(keywords, max_price)
             # call price-based search function
             # search_by_price(keywords, max_price)
         elif option == 4:
