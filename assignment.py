@@ -198,8 +198,6 @@ def main():
             # Converts stall list dictionary to list and returns list
             for food_court in dataset:
                 FoodCourt_list.append(FoodCourt(food_court, (dataset[food_court][0], dataset[food_court][1])))
-            for element in FoodCourt_list:
-                print(element)
             return FoodCourt_list
         # If options 2 or 3, merges 1D stall list and 1D corresponding keywords into a 2D list, and also creates a list of unique keywords
         for food_court in dataset:
@@ -222,6 +220,7 @@ def main():
                     )
             return [complete_stall_list, valid_keyword_list, complete_stall_list_keyword]
 
+    # Organises given dictionary into 2D Lists for access 
     def list_initialisation(option):
         if option == 2:
             or_presence = False
@@ -235,6 +234,7 @@ def main():
         populated_dataset = populate_list(option_to_dataset[option], option)
         return populated_dataset
 
+    # Splits string user input into list of string keywords 
     def keyword_split(keyword_orPresence):
         keyword_orPresence[0] = keyword_orPresence[0].lstrip().rstrip().upper()
         if " " in keyword_orPresence[0]:
@@ -257,13 +257,16 @@ def main():
             keyword_orPresence[0] = [keyword_orPresence[0].lstrip().rstrip().capitalize()]
         return keyword_orPresence
 
+    # Inputs list of keywords and a boolean value (Whether the qualifier "AND" is present), outputs a list of filtered stores
     def output_stores_by_keyword(keyword_orPresence):
         finalised_stores = []
+        # If there is no "AND"
         if keyword_orPresence[1] == True:
             for stall in complete_stall_list:
                 for indiv_keyword in keyword_orPresence[0]:
                     if indiv_keyword in stall[2] and stall not in finalised_stores:
                         finalised_stores.append(stall)
+        #If there is "AND"
         else:
             print(complete_stall_list)
             for stall in complete_stall_list:
@@ -279,25 +282,27 @@ def main():
         print(finalised_stores)
         return finalised_stores
 
+    """
+    This function is specific to calling stores by price.
+    The code used to filter stores by keyword is reused here, but the list contains stores with their keywords.
+    Hence, this function takes out the keywords from the list, and adds in the price next to the stall in each row.
+    """
     def convert_keyword_to_price(finalised_stores):
         print(finalised_stores)
         finalised_stores_price = []
         finalised_stores_count = 0
         if finalised_stores != []:
             for stall_index in range(len(complete_stall_list_keyword)):
-                print(complete_stall_list_keyword[stall_index][1])
-                print(finalised_stores[finalised_stores_count][1])
                 if complete_stall_list_keyword[stall_index][1] == finalised_stores[finalised_stores_count][1]:
                     finalised_stores_price.append(complete_stall_list_keyword[stall_index])
                     finalised_stores_count += 1
                 if finalised_stores_count == len(finalised_stores):
                     break
-
-            print(finalised_stores_price)
             return finalised_stores_price
         else: 
             return []
 
+    # For outputting stores by price, takes in filtered stores by keyword and outputs list filtered by keyword and price
     def output_stores_by_price(price, filtered_stores):
         finalised_stores = []
         for stall in filtered_stores:
@@ -305,13 +310,15 @@ def main():
                 finalised_stores.append(stall)
         return finalised_stores
 
+    # Outputs stores to user by keyword
     def print_list(finalised_stores):
         print(finalised_stores)
         print(f"Food Stalls found: {len(finalised_stores)}")
         for store in finalised_stores:
             print(f"{store[0]} - {store[1]}")
         return 0
-    
+   
+   # Outputs stores to user by price 
     def print_list_price(finalised_stores):
         print(finalised_stores)
         print(f"Food Stalls found: {len(finalised_stores)}")
@@ -319,12 +326,14 @@ def main():
             print(f"{store[0]} - {store[1]} - S${store[2]:.2f}")
         return 0
 
+    # Checks if user input is empty
     def keyword_isEmpty(keyword):
         if keyword == " ":
             print("Error: No input found. Please try again.")
             return 1
         return 0
 
+    # Checks if user inputs a keyword that is not present in the full store list
     def keyword_isInvalid(keyword):
         for element in keyword:
             if element not in valid_keyword_list:
@@ -431,11 +440,11 @@ def main():
             print("Location Dictionary: ", canteen_locations)
         elif option == 2:
             # keyword-based search
+
+            # Initialises lists needed to filter stores into separate variables
             keyword_and_stall_list = list_initialisation(option)
             valid_keyword_list = keyword_and_stall_list[1]
             complete_stall_list = keyword_and_stall_list[0]
-            print(valid_keyword_list)
-            print(complete_stall_list)
 
             print("2 -- Keyword-based Search")
             keywords = input("Enter type of food: ")
@@ -448,13 +457,12 @@ def main():
             # search_by_keyword(keywords)
         elif option == 3:
             # price-based search
+
+            # Initialises lists needed to filter stores into separate variables
             keyword_and_stall_list = list_initialisation(option)
             valid_keyword_list = keyword_and_stall_list[1]
             complete_stall_list = keyword_and_stall_list[2]
             complete_stall_list_keyword = keyword_and_stall_list[0]
-            print(valid_keyword_list)
-            print(complete_stall_list)
-            print(complete_stall_list_keyword)
 
             print("3 -- Price-based Search")
             keywords = input("Enter type of food: ")
@@ -468,6 +476,8 @@ def main():
             # search_by_price(keywords, max_price)
         elif option == 4:
             # location-based search
+
+            # Initialises lists needed to filter stores into separate variables
             FoodCourt_list = list_initialisation(option)
             print("4 -- Location-based Search")
 
