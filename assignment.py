@@ -315,6 +315,8 @@ def main():
         for stall in filtered_stores:
             if stall[2] <= price:
                 finalised_stores.append(stall)
+            else:
+                break
         if len(finalised_stores) == 0: 
             finalised_stores.append(filtered_stores[0])
         return finalised_stores
