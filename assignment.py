@@ -298,6 +298,8 @@ def main():
                     finalised_stores_count += 1
                 if finalised_stores_count == len(finalised_stores):
                     break
+            finalised_stores_price.sort(key=lambda a: a[2])
+            print(finalised_stores_price)
             return finalised_stores_price
         else: 
             return []
@@ -308,6 +310,8 @@ def main():
         for stall in filtered_stores:
             if stall[2] <= price:
                 finalised_stores.append(stall)
+        if len(finalised_stores) == 0: 
+            finalised_stores.append(filtered_stores[0])
         return finalised_stores
 
     # Outputs stores to user by keyword
@@ -320,6 +324,18 @@ def main():
    
    # Outputs stores to user by price 
     def print_list_price(finalised_stores):
+        nonlocal max_price
+        print(len(finalised_stores))
+        print(finalised_stores[0][2])
+        print(max_price)
+        print(finalised_stores[0][2] < max_price)
+        if (len(finalised_stores) == 1) and (finalised_stores[0][2] > max_price):
+            print("Food Stalls found: No food stall found with specified price range.")
+            print("Food Stall with the closest price range.")
+            for store in finalised_stores:
+                print(f"{store[0]} - {store[1]} - S${store[2]:.2f}")
+            return 0
+        
         print(finalised_stores)
         print(f"Food Stalls found: {len(finalised_stores)}")
         for store in finalised_stores:
@@ -379,12 +395,6 @@ def main():
 
         if max_price < 0:
             print("Error: Meal price cannot be a negative number. Please try again.")
-            return 1
-
-        if 0 < max_price < 1.5:
-            print("Food Stalls found: No food stall found with specified price range.")
-            print("Food Stall with the closest price range.")
-            print("Food Court 14 – Willy Waffles – S$1.50")
             return 1
 
         filtered_stores = convert_keyword_to_price(output_stores_by_keyword(keyword_orPresence))
